@@ -1,0 +1,592 @@
+
+:root {
+  --bg-primary: #0d0d14;
+  --bg-secondary: #13131f;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-hover: rgba(255, 255, 255, 0.08);
+
+  --accent-primary: #7c3aed;    /* violet-600 */
+  --accent-secondary: #a78bfa;  /* violet-400 */
+  --accent-glow: rgba(124, 58, 237, 0.35);
+  --accent-btn: linear-gradient(135deg, #7c3aed, #5b21b6);
+
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --danger-glow: rgba(239, 68, 68, 0.3);
+
+  --success: #22c55e;
+  --success-glow: rgba(34, 197, 94, 0.25);
+
+  --text-primary: #f1f0fb;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 50px;
+
+  --shadow-card: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--glass-border);
+  --shadow-btn: 0 4px 20px var(--accent-glow);
+  --shadow-input: 0 0 0 2px var(--accent-primary), 0 4px 20px var(--accent-glow);
+
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── Animated Background ── */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: floatOrb 12s ease-in-out infinite alternate;
+}
+
+body::before {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, transparent 70%);
+  top: -150px;
+  left: -100px;
+}
+
+body::after {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(91, 33, 182, 0.15) 0%, transparent 70%);
+  bottom: -100px;
+  right: -100px;
+  animation-delay: -6s;
+}
+
+@keyframes floatOrb {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(30px, 30px) scale(1.1); }
+}
+
+/* ── Main App Card ── */
+#app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 560px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 36px 32px 32px;
+  animation: cardIn 0.6s var(--transition-bounce) both;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Header ── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--text-primary) 40%, var(--accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.app-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.task-pill {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  color: var(--accent-secondary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-smooth);
+}
+
+.task-pill .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 6px var(--accent-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ── Progress Bar ── */
+.progress-wrap {
+  margin-bottom: 28px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: var(--glass-bg);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  border-radius: var(--radius-pill);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* ── Input Area ── */
+.input-area {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+#task {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 13px 18px;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-weight: 500;
+  outline: none;
+  transition: all var(--transition-smooth);
+}
+
+#task::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+#task:focus {
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-input);
+  background: rgba(124, 58, 237, 0.06);
+}
+
+#taskSubmit {
+  background: var(--accent-btn);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 13px 22px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  box-shadow: var(--shadow-btn);
+  transition: all var(--transition-smooth);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+#taskSubmit::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+#taskSubmit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+#taskSubmit:hover::after {
+  opacity: 1;
+}
+
+#taskSubmit:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+/* ── Filter Tabs ── */
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 5px;
+}
+
+.filter-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  padding: 8px 12px;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  letter-spacing: 0.02em;
+}
+
+.filter-tab.active {
+  background: var(--accent-primary);
+  color: #fff;
+  box-shadow: 0 2px 12px var(--accent-glow);
+}
+
+.filter-tab:not(.active):hover {
+  color: var(--text-secondary);
+  background: var(--glass-hover);
+}
+
+/* ── Task List ── */
+#to-do-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+#to-do-list::-webkit-scrollbar {
+  width: 4px;
+}
+#to-do-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+#to-do-list::-webkit-scrollbar-thumb {
+  background: var(--glass-border);
+  border-radius: 4px;
+}
+#to-do-list::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* ── Task Item ── */
+li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-smooth);
+  animation: taskSlideIn 0.35s var(--transition-bounce) both;
+  cursor: default;
+}
+
+@keyframes taskSlideIn {
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+li:hover {
+  background: var(--glass-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(2px);
+}
+
+li.removing {
+  animation: taskSlideOut 0.3s ease forwards;
+}
+
+@keyframes taskSlideOut {
+  to { opacity: 0; transform: translateX(20px) scale(0.95); max-height: 0; margin: 0; padding: 0; border-width: 0; }
+}
+
+/* Custom Checkbox */
+.task-check {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.task-check::after {
+  content: '✓';
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: transparent;
+  transition: all var(--transition-smooth);
+  line-height: 1;
+}
+
+.task-check:hover {
+  border-color: var(--accent-secondary);
+  background: rgba(124, 58, 237, 0.1);
+}
+
+li.striker .task-check {
+  background: var(--success);
+  border-color: var(--success);
+  box-shadow: 0 0 12px var(--success-glow);
+}
+
+li.striker .task-check::after {
+  color: #fff;
+}
+
+/* Task Text */
+.task-text {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  word-break: break-word;
+  line-height: 1.4;
+  transition: all var(--transition-smooth);
+  user-select: none;
+}
+
+li.striker .task-text {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--text-muted);
+}
+
+/* Delete Button */
+.delete {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--danger);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all var(--transition-smooth);
+  font-family: inherit;
+  line-height: 1;
+}
+
+li:hover .delete {
+  opacity: 1;
+}
+
+.delete:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+  box-shadow: 0 4px 14px var(--danger-glow);
+  transform: scale(1.1);
+}
+
+.delete:active {
+  transform: scale(0.95);
+}
+
+/* ── Empty State ── */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  display: none;
+}
+
+.empty-state.visible {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+.empty-state .empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  filter: grayscale(0.5);
+}
+
+.empty-state p {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.empty-state span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Footer ── */
+.app-footer {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 16px;
+}
+
+.footer-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.footer-count span {
+  color: var(--accent-secondary);
+  font-weight: 700;
+}
+
+.clear-btn {
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--danger);
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  letter-spacing: 0.02em;
+}
+
+.clear-btn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: var(--danger);
+  box-shadow: 0 0 12px var(--danger-glow);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  #app {
+    padding: 24px 18px 22px;
+    border-radius: var(--radius-md);
+  }
+
+  .app-title {
+    font-size: 1.4rem;
+  }
+
+  .input-area {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #taskSubmit {
+    justify-content: center;
+    padding: 13px;
+  }
+
+  li .delete {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 380px) {
+  body {
+    padding: 12px;
+  }
+
+  .app-title {
+    font-size: 1.2rem;
+  }
+
+  .filter-tabs {
+    gap: 4px;
+  }
+}
